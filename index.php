@@ -51,5 +51,9 @@ foreach($rsc as $r){
 </tbody>
 </table>
 
-  </body>
+<div class="col-md-4" style="float:right;padding:20px;">
+<a href="write.php"><button type="button" class="btn btn-primary">등록</button><a>
+</div>
+
+</body>
 </html>
