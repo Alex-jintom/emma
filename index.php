@@ -1,7 +1,7 @@
 <?php
-include $_SERVER["DOCUMENT_ROOT"]."/dbcon.php";
+include "dbcon.php";
 
-$result = $mysqli->query("select * from board") or die("query error => ".$mysqli->error);
+$result = $mysqli->query("SELECT * from board") or die("query error => ".$mysqli->error);
 while($rs = $result->fetch_object()){
     $rsc[]=$rs;
 }

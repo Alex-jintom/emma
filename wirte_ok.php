@@ -1,12 +1,12 @@
 <?php
-include $_SERVER["DOCUMENT_ROOT"]."/dbcon.php";
+include "dbcon.php";
 
 $subject=$_POST["subject"];
 $content=$_POST["content"];
 $userid="hong";//userid는 없어서 임의로 넣어줬다.
 $status=1;//status는 1이면 true, 0이면 false이다.
 
-$sql="insert into board (userid,subject,content) values ('".$userid."','".$subject."','".$content."')";
+$sql="INSERT INTO board (userid,subject,content) VALUES ('".$userid."','".$subject."','".$content."')";
 $result=$mysqli->query($sql) or die($mysqli->error);
 
 if($result){

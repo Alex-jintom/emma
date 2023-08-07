@@ -1,8 +1,8 @@
 <?php
-include $_SERVER["DOCUMENT_ROOT"]."/dbcon.php";
+include "dbcon.php";
 
 $bid=$_GET["bid"];
-$result = $mysqli->query("select * from board where bid=".$bid) or die("query error => ".$mysqli->error);
+$result = $mysqli->query("SELECT * from board where bid=".$bid) or die("query error => ".$mysqli->error);
 $rs = $result->fetch_object();
 
 // echo "<pre>";
