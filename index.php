@@ -44,7 +44,7 @@ foreach($rsc as $r){
 <tr>
 <th scope="row"><?php echo $i++;?></th>
 <td><?php echo $r->userid?></td>
-<td><a href="/view.php?bid=<?php echo $r->bid;?>"><?php echo $r->subject?></a></td>
+<td><a href="view.php?bid=<?php echo $r->bid;?>"><?php echo $r->subject?></a></td>
 <td><?php echo $r->regdate?></td>
 </tr>
 <?php }?>

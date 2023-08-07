@@ -10,7 +10,7 @@ $sql="INSERT INTO board (userid,subject,content) VALUES ('".$userid."','".$subje
 $result=$mysqli->query($sql) or die($mysqli->error);
 
 if($result){
-    echo "<script>location.href='/index.php';</script>";
+    echo "<script>location.href='index.php';</script>";
     exit;
 }else{
     echo "<script>alert('글등록에 실패했습니다.');history.back();</script>";

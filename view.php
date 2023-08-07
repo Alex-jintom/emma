@@ -43,7 +43,7 @@ $rs = $result->fetch_object();
       </article>
 
       <nav class="blog-pagination" aria-label="Pagination">
-        <a class="btn btn-outline-primary" href="/index.php">목록</a>
+        <a class="btn btn-outline-primary" href="index.php">목록</a>
         <!-- <a class="btn btn-outline-secondary" href="#">답글</a> -->
       </nav>
 
