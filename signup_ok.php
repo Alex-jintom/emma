@@ -1,5 +1,5 @@
 <?php
-include "/var/www/html/dbcon.php";
+include "dbcon.php";
 
 $userid=$_POST["userid"];
 $username=$_POST["username"];
@@ -13,7 +13,7 @@ $sql="INSERT INTO members
 $result=$mysqli->query($sql) or die($mysqli->error);
 
 if($result){
-    echo "<script>alert('가입을 환영합니다.');location.href='/var/www/html/index.php';</script>";
+    echo "<script>alert('가입을 환영합니다.');location.href='index.php';</script>";
     exit;
 }else{
     echo "<script>alert('회원가입에 실패했습니다.');history.back();</script>";
