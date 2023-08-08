@@ -3,13 +3,18 @@
 session_start();
 header('Content-Type: text/html; charset=utf-8'); // utf-8인코딩
 
-$db = new mysqli("localhost", "root", "!qas123456789", "jin");
-$db->set_charset("utf8");
+//$db = new mysqli("localhost", "root", "!qas123456789", "jin");
+//$db->set_charset("utf8");
 
+$mysqli = new mysqli("localhost", "root", "!qas123456789", "jin");
+$mysqli->set_charset("utf8");
 function mq($sql)
 {
-global $db;
-return $db->query($sql);
+  global $mysqli;
+  return $mysqli->query($sql);
+
+  //global $db;
+  //return $db->query($sql);
 }
 
 
