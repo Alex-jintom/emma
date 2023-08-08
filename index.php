@@ -24,7 +24,7 @@ foreach($rsc as $r){
     <tr>
         <th scope="row"><?php echo $i++;?></th>
         <td><?php echo $r->userid?></td>
-        <td><a href="/view.php?bid=<?php echo $r->bid;?>"><?php echo $r->subject?></a></td>
+        <td><a href="view.php?bid=<?php echo $r->bid;?>"><?php echo $r->subject?></a></td>
         <td><?php echo $r->regdate?></td>
     </tr>
 <?php }?>
@@ -37,17 +37,16 @@ foreach($rsc as $r){
 if($_SESSION['UID']){//세션값이 있는지 여부를 확인해서 로그인 했는지를 체크한다.
 ?>
     <a href="write.php"><button type="button" class="btn btn-primary">등록</button><a>
-    <a href="/member/logout.php"><button type="button" class="btn btn-primary">로그아웃</button><a>
+    <a href="logout.php"><button type="button" class="btn btn-primary">로그아웃</button><a>
 <?php
 }else{
 ?>
-    <a href="/member/login.php"><button type="button" class="btn btn-primary">로그인</button><a>
-    <a href="/member/signup.php"><button type="button" class="btn btn-primary">회원가입</button><a>
+    <a href="login.php"><button type="button" class="btn btn-primary">로그인</button><a>
+    <a href="signup.php"><button type="button" class="btn btn-primary">회원가입</button><a>
 <?php
 }
 ?>
-</p>
-?>
+
 </p>
 <?php
 include "footer.php";
