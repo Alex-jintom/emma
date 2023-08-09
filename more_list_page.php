@@ -40,7 +40,8 @@ while($rs = $result->fetch_object()){
         if($r->parent_id){
             $data.="&nbsp;&nbsp;";
         }
-        $data.="<a href=\"view.php?bid=".$r->bid."\">".$subject."</a></td
+        //$data.="<a href=\"view.php?bid=".$r->bid."\">".$subject."</a></td 이거 문제야!!!!!!!!!!!!!
+        $data.="<a href=view.php?bid=.$r->bid.>".$subject."</a></td
                 <td>".$r->regdate."</td>
             </tr>";
         $idNumber--;

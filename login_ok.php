@@ -17,5 +17,6 @@ if($rs){
 }else{
     echo "<script>alert('아이디나 암호가 틀렸습니다. 다시한번 확인해주십시오.');history.back();</script>";
     exit;
+
 }
 ?>
