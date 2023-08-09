@@ -1,10 +1,15 @@
 <?php session_start();
 include "dbcon.php";//dbcon.php 안에는 session_start()가 없기때문에 위에 따로 선언해준다.
 
+
 if(!$_SESSION['UID']){
     echo "<script>alert('회원 전용 게시판입니다.');location.href='index.php';</script>";
     exit;
 }
+
+// echo "<pre>";
+// print_r($_FILES);
+// exit;
 
 
 $subject=$_POST["subject"];
@@ -26,13 +31,44 @@ if($bid){//bid값이 있으면 수정이고 아니면 등록이다.
     $sql="update board set subject='".$subject."', content='".$content."', modifydate=now() where bid=".$bid;
 
 }else{
+
     if($parent_id){//답글인 경우 쿼리를 수정해서 parent_id를 넣어준다.
         $sql="insert into board (userid,subject,content,parent_id) values ('".$userid."','".$subject."','".$content."','".$parent_id."')";
     }else{
         $sql="insert into board (userid,subject,content) values ('".$userid."','".$subject."','".$content."')";
     }
+   
 }
 $result=$mysqli->query($sql) or die($mysqli->error);
+if(!$bid)$bid = $mysqli -> insert_id;
+
+if($_FILES["upfile"]["name"]){//첨부한 파일이 있으면
+
+    if($_FILES['upfile']['size']>10240000){//10메가
+        echo "<script>alert('10메가 이하만 첨부할 수 있습니다.');history.back();</script>";
+        exit;
+    }
+
+    if($_FILES['upfile']['type']!='image/jpeg' and $_FILES['upfile']['type']!='image/gif' and $_FILES['upfile']['type']!='image/png'){//이미지가 아니면, 다른 type은 and로 추가
+        echo "<script>alert('이미지만 첨부할 수 있습니다.');history.back();</script>";
+        exit;
+    }
+
+    $save_dir = $_SERVER['DOCUMENT_ROOT']."/data/";//파일을 업로드할 디렉토리
+    $filename = $_FILES["upfile"]["name"];
+    $ext = pathinfo($filename,PATHINFO_EXTENSION);//확장자 구하기
+    $newfilename = date("YmdHis").substr(rand(),0,6);
+    $upfile = $newfilename.".".$ext;//새로운 파일이름과 확장자를 합친다
+   
+    if(move_uploaded_file($_FILES["upfile"]["tmp_name"], $save_dir.$upfile)){//파일 등록에 성공하면 디비에 등록해준다.
+        $sql="INSERT INTO testdb.file_table
+        (bid, userid, filename)
+        VALUES(".$bid.", '".$_SESSION['UID']."', '".$upfile."')";
+        $result=$mysqli->query($sql) or die($mysqli->error);
+    }
+
+}
+
 
 if($result){
     echo "<script>location.href='index.php';</script>";
