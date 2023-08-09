@@ -57,14 +57,15 @@ if(count($_FILES["upfile"]["name"])>0){//첨부한 파일이 있으면
             exit;
         }
         $save_dir = "/var/www/html/data/";
-        // $save_dir = $_SERVER['DOCUMENT_ROOT']."/data/";//파일을 업로드할 디렉토리
+        // $save_dir = $_SERVER['DOCUMENT_ROOT']."/data/";//파일을 업로드할 디렉토리 "이렇게 입력이 되어있지만 안먹혀서 안쓸예정"
         $filename = $_FILES["upfile"]["name"][$k];
         $ext = pathinfo($filename,PATHINFO_EXTENSION);//확장자 구하기
         $newfilename = date("YmdHis").substr(rand(),0,6);
         $upfile = $newfilename.".".$ext;//새로운 파일이름과 확장자를 합친다
        
         if(move_uploaded_file($_FILES["upfile"]["tmp_name"][$k], $save_dir.$upfile)){//파일 등록에 성공하면 디비에 등록해준다.
-            $sql="INSERT INTO testdb.file_table
+            //$sql="INSERT INTO testdb.file_table "잘못된 테이블 인듯!!!!!!!!!!!!!!"
+            $sql="INSERT INTO file_table
             (bid, userid, filename)
             VALUES(".$bid.", '".$_SESSION['UID']."', '".$upfile."')";
             $result=$mysqli->query($sql) or die($mysqli->error);
