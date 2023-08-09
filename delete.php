@@ -6,7 +6,7 @@ if(!$_SESSION['UID']){
     exit;
 }
 
-$bid=$_POST["bid"]??$_GET["bid"];//post가 아니면 get으로 받는다
+$bid=$_POST["bid"]??$_GET["bid"];
 
 if($bid){
     $result = $mysqli->query("select * from board where bid=".$bid) or die("query error => ".$mysqli->error);
@@ -19,6 +19,15 @@ if($bid){
 
     $sql="update board set status=0 where bid=".$bid;//status값을 바꿔준다.
     $result=$mysqli->query($sql) or die($mysqli->error);
+
+    //게시물에 첨부된 파일이 있으면 디비에서 조회 후 모두 삭제해준다.
+    $file_result = $mysqli->query("select * from file_table where status=1 and bid=".$bid) or die("query error => ".$mysqli->error);
+    while($rs = $file_result->fetch_object()){
+        //$delete_file=$_SERVER["DOCUMENT_ROOT"]."/data/".$rs->filename; "요것도 삭제!!!!!!!!!!!"
+        $delete_file="/var/www/html/data/".$rs->filename;
+        unlink($delete_file);
+    }
+
 }else{
     echo "<script>alert('삭제할 수 없습니다.');history.back();</script>";
     exit;
@@ -32,4 +41,6 @@ if($result){
     echo "<script>alert('글삭제에 실패했습니다.');history.back();</script>";
     exit;
 }
+
+
 ?>
