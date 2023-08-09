@@ -2,6 +2,7 @@
 include "header.php";
 
 
+
 $bid=$_GET["bid"];
 $result = $mysqli->query("select * from board where bid=".$bid) or die("query error => ".$mysqli->error);
 $rs = $result->fetch_object();
@@ -12,6 +13,12 @@ while($mrs = $memo_result->fetch_object()){
     $memoArray[]=$mrs;
 }
 
+$fquery="select * from file_table where status=1 and bid=".$rs->bid." order by fid asc";
+$file_result = $mysqli->query($fquery) or die("query error => ".$mysqli->error);
+while($frs = $file_result->fetch_object()){
+    $fileArray[]=$frs;
+}
+
 $query2="select type,count(*) as cnt from recommend r where bid=".$rs->bid." group by type";
 $rec_result = $mysqli->query($query2) or die("query error => ".$mysqli->error);
 while($recs = $rec_result->fetch_object()){
@@ -19,6 +26,13 @@ while($recs = $rec_result->fetch_object()){
 }
 
 ?>
+
+<style>
+  img {
+    max-width:90%;
+  }
+</style>
+
       <h3 class="pb-4 mb-4 fst-italic border-bottom" style="text-align:center;">
         - 게시판 보기 -
       </h3>
@@ -28,9 +42,15 @@ while($recs = $rec_result->fetch_object()){
         <p class="blog-post-meta"><?php echo $rs->regdate;?> by <a href="#"><?php echo $rs->userid;?></a></p>
 
         <hr>
+        <?php
+          foreach($fileArray as $fa){
+        ?>
+          <p><img src="/data/<?php echo $fa->filename;?>"></p>
+        <?php }?>
         <p>
           <?php echo $rs->content;?>
         </p>
+       
         <div style="text-align:center;">
           <button type="button" class="btn btn-lg btn-primary" id="like_button">추천&nbsp;<span id="like"><?php echo number_format($recommend['like']);?></span></button>
           <button type="button" class="btn btn-lg btn-warning" id="hate_button">반대&nbsp;<span id="hate"><?php echo number_format($recommend['hate']);?></span></button>
@@ -42,7 +62,9 @@ while($recs = $rec_result->fetch_object()){
 
       <nav class="blog-pagination" aria-label="Pagination">
         <a class="btn btn-outline-secondary" href="index.php">목록</a>
+
         <a class="btn btn-outline-secondary" href="write.php?parent_id=<?php echo $rs->bid;?>">답글</a>
+
         <a class="btn btn-outline-secondary" href="write.php?bid=<?php echo $rs->bid;?>">수정</a>
         <a class="btn btn-outline-secondary" href="delete.php?bid=<?php echo $rs->bid;?>">삭제</a>
       </nav>

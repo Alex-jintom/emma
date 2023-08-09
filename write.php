@@ -44,11 +44,11 @@ if($parent_id){//parent_id가 있다는건 답글이라는 의미다.
             <textarea class="form-control" id="exampleFormControlTextarea1" name="content" rows="3"><?php echo $rs->content;?></textarea>
             </div>
             <div class="mb-3">
-                <input type="file" name="upfile">
+                <input type="file" name="upfile[]" multiple>
             </div>
             <button type="submit" class="btn btn-primary">등록</button>
         </form>
-        
+
         <?php
 include "footer.php";
 ?>
