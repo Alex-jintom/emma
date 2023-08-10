@@ -27,7 +27,7 @@ while($rs = $result->fetch_object()){
     $data="";
     $idNumber = $totalCount - ($pageNumber-1)*$pageCount;
     foreach($rsc as $r){
-        //검색어만 하이라이트 해준다.
+        //검색어만 하이라이트 해준다.  요거는 나중에 사용!! $data.="<a href=view.php?bid=.$r->bid.>".$subject."</a></td
         $subject = str_replace($search_keyword,"<span style='color:red;'>".$search_keyword."</
             span>",$r->subject);
 
@@ -40,8 +40,7 @@ while($rs = $result->fetch_object()){
         if($r->parent_id){
             $data.="&nbsp;&nbsp;";
         }
-        //$data.="<a href=\"view.php?bid=".$r->bid."\">".$subject."</a></td 이거 문제야!!!!!!!!!!!!!
-        $data.="<a href=view.php?bid=.$r->bid.>".$subject."</a></td
+        $data.="<a href=\"view.php?bid=".$r->bid."\">".$subject."</a></td 
                 <td>".$r->regdate."</td>
             </tr>";
         $idNumber--;

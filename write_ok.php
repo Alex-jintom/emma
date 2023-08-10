@@ -65,9 +65,9 @@ if(count($_FILES["upfile"]["name"])>0){//첨부한 파일이 있으면
        
         if(move_uploaded_file($_FILES["upfile"]["tmp_name"][$k], $save_dir.$upfile)){//파일 등록에 성공하면 디비에 등록해준다.
             //$sql="INSERT INTO testdb.file_table "잘못된 테이블 인듯!!!!!!!!!!!!!!"
-            $sql="INSERT INTO file_table
+            $sql="insert into file_table
             (bid, userid, filename)
-            VALUES(".$bid.", '".$_SESSION['UID']."', '".$upfile."')";
+            values (".$bid.", '".$_SESSION['UID']."', '".$upfile."')";
             $result=$mysqli->query($sql) or die($mysqli->error);
         }
 

@@ -61,7 +61,7 @@ if($parent_id){//parent_id가 있다는건 답글이라는 의미다.
                 ?>
                 <div class="col" id="f_<?php echo $fa->fid;?>">
                     <div class="card h-100">
-                        <img src="/data/<?php echo $fa->filename?>" class="card-img-top" alt="...">
+                        <img src="/var/www/html/data/<?php echo $fa->filename?>" class="card-img-top" alt="...">
                     <div class="card-body">
                         <button type="button" class="btn btn-warning" onclick="file_del(<?php echo $fa->fid;?>)">삭제</button>
                     </div>
