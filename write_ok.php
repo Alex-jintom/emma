@@ -43,6 +43,18 @@ if($bid){//bid값이 있으면 수정이고 아니면 등록이다.
 $result=$mysqli->query($sql) or die($mysqli->error);
 if(!$bid)$bid = $mysqli -> insert_id;
 
+
+$file_name = $_FILES['upload_file']['name'];
+$tmp_file = $_FILES['upload_file']['tmp_name'];
+
+$file_path = '/var/www/html/data/'.$file_name;
+
+$r = move_uploaded_file($tmp_file, $file_path);
+
+
+
+
+
 if(count($_FILES["upfile"]["name"])>0){//첨부한 파일이 있으면
 
     for($k=0;$k<count($_FILES["upfile"]["name"]);$k++){
