@@ -45,7 +45,7 @@ if(!$bid)$bid = $mysqli -> insert_id;
 
 
 $file_name = $_FILES['upload_file']['name'];
-$tmp_file = $_FILES['upload_file']['tmp_name'];
+$tmp_file = $_FILES['upload_file']['name'];
 
 $file_path = '/var/www/html/data/'.$file_name;
 
