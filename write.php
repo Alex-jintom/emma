@@ -41,11 +41,22 @@ if($parent_id){//parent_id가 있다는건 답글이라는 의미다.
         <form method="post" action="write_ok.php" enctype="multipart/form-data">
 
 
+
+        
         <input type="file" name="upload_file">
 
         <input type="submit" value="업로드">
 
 
+        <form enctype="multipart/form-data" action="write_ok.php" method="POST">
+  <input type="hidden" name="MAX_FILE_SIZE" value="4000000" />
+    Send File: <input name="userfile" type="file" />
+  <input type="submit" value="Send File" />
+
+
+
+
+</form>
 
             <input type="hidden" name="bid" value="<?php echo $bid;?>">
 
