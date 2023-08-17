@@ -46,77 +46,6 @@ if(!$bid)$bid = $mysqli -> insert_id;
 
 
 
-$file_name = $_FILES['upload_file']['name'];
-$tmp_file = $_FILES['upload_file']['name'];
-
-$file_path = '/var/www/html/data/'.$file_name;
-
-$r = move_uploaded_file($tmp_file, $file_path);
-
-
-
-
-
-
-
-$uploaddir = "/var/www/html/data/";
-
-print_r($uploadfile = $uploaddir.basename($_FILES['userfile']['name']));
-
-  echo '<pre>';
-  if (move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile)) {
-      echo "File was successfully uploaded.\n";
-  } else {
-      echo "FileUpload was failed.\n";
-  }
-
-  echo 'info:';
-  print_r($_FILES);
-  echo "<br />";
-
-    if(UPLOAD_ERR_OK !=$_FILES['userfile']['error'])
-    {
-
-        switch ($_FILES['userfile']['error']) { 
-            case UPLOAD_ERR_INI_SIZE: 
-                $message = "The uploaded file exceeds the upload_max_filesize directive in php.ini"; 
-                break; 
-            case UPLOAD_ERR_FORM_SIZE: 
-                $message = "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form";
-                break; 
-            case UPLOAD_ERR_PARTIAL: 
-                $message = "The uploaded file was only partially uploaded"; 
-                break; 
-            case UPLOAD_ERR_NO_FILE: 
-                $message = "No file was uploaded"; 
-                break; 
-            case UPLOAD_ERR_NO_TMP_DIR: 
-                $message = "Missing a temporary folder"; 
-                break; 
-            case UPLOAD_ERR_CANT_WRITE: 
-                $message = "Failed to write file to disk"; 
-                break; 
-            case UPLOAD_ERR_EXTENSION: 
-                $message = "File upload stopped by extension"; 
-                break; 
-            default: 
-                $message = "Unknown upload error"; 
-                break; 
-        }
-
-        echo $message;
-
-    }
- print "</pre>";
-  
-
-
-
-
-
-
-
-
 if(count($_FILES["upfile"]["name"])>0){//첨부한 파일이 있으면
 
     for($k=0;$k<count($_FILES["upfile"]["name"]);$k++){
@@ -130,7 +59,7 @@ if(count($_FILES["upfile"]["name"])>0){//첨부한 파일이 있으면
             echo "<script>alert('이미지만 첨부할 수 있습니다.');history.back();</script>";
             exit;
         }
-        $save_dir = "/var/www/html/data/";
+        $save_dir = $_SERVER['DOCUMENT_ROOT'];
         // $save_dir = $_SERVER['DOCUMENT_ROOT']."/data/";//파일을 업로드할 디렉토리 "이렇게 입력이 되어있지만 안먹혀서 안쓸예정!!!!!!!!!!"
         $filename = $_FILES["upfile"]["name"][$k];
         $ext = pathinfo($filename,PATHINFO_EXTENSION);//확장자 구하기

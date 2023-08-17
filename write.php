@@ -42,20 +42,6 @@ if($parent_id){//parent_id가 있다는건 답글이라는 의미다.
 
 
 
-        
-        <input type="file" name="upload_file">
-
-        <input type="submit" value="업로드">
-
-
-        <form enctype="multipart/form-data" action="write_ok.php" method="POST">
-  <input type="hidden" name="MAX_FILE_SIZE" value="4000000" />
-    Send File: <input name="userfile" type="file" />
-  <input type="submit" value="Send File" />
-
-
-
-
 </form>
 
             <input type="hidden" name="bid" value="<?php echo $bid;?>">
@@ -79,7 +65,7 @@ if($parent_id){//parent_id가 있다는건 답글이라는 의미다.
                 ?>
                 <div class="col" id="f_<?php echo $fa->fid;?>">
                     <div class="card h-100">
-                        <img src="/var/www/html/data/<?php echo $fa->filename?>" class="card-img-top" alt="...">
+                        <img src="$_SERVER['DOCUMENT_ROOT']<?php echo $fa->filename?>" class="card-img-top" alt="...">
                     <div class="card-body">
                         <button type="button" class="btn btn-warning" onclick="file_del(<?php echo $fa->fid;?>)">삭제</button>
                     </div>
