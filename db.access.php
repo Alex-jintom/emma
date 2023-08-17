@@ -1,6 +1,6 @@
 <?php
 
-session_start();
+session_start();//////test
 header('Content-Type: text/html; charset=utf-8'); // utf-8인코딩
 
 $db = new mysqli("localhost", "root", "!qas123456789", "jin");
