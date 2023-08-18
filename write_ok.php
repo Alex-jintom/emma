@@ -59,6 +59,8 @@ if($_FILES["upfile"]["name"]){//첨부한 파일이 있으면
     $ext = pathinfo($filename,PATHINFO_EXTENSION);//확장자 구하기
     $newfilename = date("YmdHis").substr(rand(),0,6);
     $upfile = $newfilename.".".$ext;//새로운 파일이름과 확장자를 합친다
+
+    echo $filename;
    
     if(move_uploaded_file($_FILES["upfile"]["tmp_name"], $save_dir.$upfile)){//파일 등록에 성공하면 디비에 등록해준다.
         $sql="INSERT INTO jin.file_table
