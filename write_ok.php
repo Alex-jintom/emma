@@ -48,9 +48,6 @@ if(!$bid)$bid = $mysqli -> insert_id;
 
 
 
-
-
-
     // 임시 저장된 정보
     $myTempFile = $_FILES['imgFile']['tmp_name'];
 
@@ -107,6 +104,8 @@ if(!$bid)$bid = $mysqli -> insert_id;
       echo "이미지 파일이 아닙니다.";
       exit;
     }
+
+
 
 
 
