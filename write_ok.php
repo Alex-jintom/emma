@@ -55,12 +55,12 @@ if(!$bid)$bid = $mysqli -> insert_id;
     // 파일명을 기존의 파일명을 그대로 쓰고 싶은 경우
     $fileName = $_FILES['imgFile']['name'];
     // 파일 타입 및 확장자 구하기
-    $fileTypeExtension = explode("/", $_FILES['imgFile']['type']);
+    //$fileTypeExtension = explode("/", $_FILES['imgFile']['type']);
 
     // 파일 타입
-    $fileType = $fileTypeExtension[0];
+    //$fileType = $fileTypeExtension[0];
     // 파일 확장자
-    $extention = $fileTypeExtension[1];
+    //$extention = $fileTypeExtension[1];
 
     // 확장자 검사
     $isExtGood = true;
@@ -79,7 +79,7 @@ if(!$bid)$bid = $mysqli -> insert_id;
     //}
 
     // 이미지 파일이 맞는지 확인
-    if ($fileType  == 'image') {
+    //if ($fileType  == 'image') {
       // 허용할 확장자를 jpg, bmp, gif, png로 정함, 그 외는 업로드 불가
       if ($isExtGood) {
         // 임시 파일 옮길 폴더 및 파일명
@@ -98,12 +98,12 @@ if(!$bid)$bid = $mysqli -> insert_id;
         echo "허용하는 확장자는 jpg, bmp, gif, png 입니다. - else";
         exit;
       }
-    }
+    //}
     // type이 image가 아닐때
-    else {
-      echo "이미지 파일이 아닙니다.";
-      exit;
-    }
+   // else {
+     // echo "이미지 파일이 아닙니다.";
+      //exit;
+  //  }
 
 
 
