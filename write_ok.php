@@ -59,7 +59,7 @@ if(count($_FILES["upfile"]["name"])>0){//첨부한 파일이 있으면
             echo "<script>alert('이미지만 첨부할 수 있습니다.');history.back();</script>";
             exit;
         }
-        $save_dir = $_SERVER['DOCUMENT_ROOT'];
+        $save_dir = '/var/www/html/';
         // $save_dir = $_SERVER['DOCUMENT_ROOT']."/data/";//파일을 업로드할 디렉토리 "이렇게 입력이 되어있지만 안먹혀서 안쓸예정!!!!!!!!!!"
         $filename = $_FILES["upfile"]["name"][$k];
         $ext = pathinfo($filename,PATHINFO_EXTENSION);//확장자 구하기
