@@ -42,6 +42,11 @@ if($bid){//bid값이 있으면 수정이고 아니면 등록이다.
 $result=$mysqli->query($sql) or die($mysqli->error);
 if(!$bid)$bid = $mysqli -> insert_id;
 
+
+
+
+
+
 if($_FILES["upfile"]["name"]){//첨부한 파일이 있으면
 
     if($_FILES['upfile']['size']>10240000){//10메가
@@ -54,7 +59,7 @@ if($_FILES["upfile"]["name"]){//첨부한 파일이 있으면
         exit;
     }
 
-    $save_dir = "/var/www/html/data/";//파일을 업로드할 디렉토리
+    $save_dir = "./data/";//파일을 업로드할 디렉토리
     $filename = $_FILES["upfile"]["name"];
     $ext = pathinfo($filename,PATHINFO_EXTENSION);//확장자 구하기
     $newfilename = date("YmdHis").substr(rand(),0,6);

@@ -30,6 +30,8 @@ if($parent_id){//parent_id가 있다는건 답글이라는 의미다.
 }
 
 
+
+
 ?>
         <form method="post" action="write_ok.php" enctype="multipart/form-data">
             <input type="hidden" name="bid" value="<?php echo $bid;?>">
@@ -48,7 +50,9 @@ if($parent_id){//parent_id가 있다는건 답글이라는 의미다.
             </div>
             <button type="submit" class="btn btn-primary">등록</button>
         </form>
-        
+
+
+
         <?php
 include "footer.php";
 ?>
