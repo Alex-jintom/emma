@@ -63,20 +63,20 @@ if(!$bid)$bid = $mysqli -> insert_id;
     $extention = $fileTypeExtension[1];
 
     // 확장자 검사
-    $isExtGood = false;
+    $isExtGood = true;
 
-    switch ($extention) {
-      case 'jpeg':
-      case 'bmp':
-      case 'gif':
-      case 'png':
-        $isExtGood = true;
-        break;
-      default:
-        echo "허용하는 확장자는 jpg, bmp, gif, png 입니다. - switch";
-        exit;
-        break;
-    }
+    //switch ($extention) {
+     // case 'jpeg':
+     // case 'bmp':
+     // case 'gif':
+     // case 'png':
+     //   $isExtGood = true;
+     //   break;
+      //default:
+      //  echo "허용하는 확장자는 jpg, bmp, gif, png 입니다. - switch";
+     //   exit;
+      //  break;
+    //}
 
     // 이미지 파일이 맞는지 확인
     if ($fileType  == 'image') {
