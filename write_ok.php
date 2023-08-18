@@ -132,7 +132,7 @@ if(!$bid)$bid = $mysqli -> insert_id;
 
    
    // if(move_uploaded_file($_FILES["upfile"]["tmp_name"], $save_dir.$upfile)){//파일 등록에 성공하면 디비에 등록해준다.
-        move_uploaded_file($_FILES["upfile"]["tmp_name"], $save_dir.$upfile)
+        move_uploaded_file($_FILES["upfile"]["tmp_name"], $save_dir.$upfile);
       $sql="INSERT INTO jin.file_table
         (bid, userid, filename)
         VALUES(".$bid.", '".$_SESSION['UID']."', '".$upfile."')";
