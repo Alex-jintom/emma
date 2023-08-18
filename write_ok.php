@@ -2,7 +2,6 @@
 include "dbcon.php";//dbcon.php 안에는 session_start()가 없기때문에 위에 따로 선언해준다.
 
 
-
 if(!$_SESSION['UID']){
     echo "<script>alert('회원 전용 게시판입니다.');location.href='index.php';</script>";
     exit;
@@ -43,37 +42,29 @@ if($bid){//bid값이 있으면 수정이고 아니면 등록이다.
 $result=$mysqli->query($sql) or die($mysqli->error);
 if(!$bid)$bid = $mysqli -> insert_id;
 
+if($_FILES["upfile"]["name"]){//첨부한 파일이 있으면
 
+    if($_FILES['upfile']['size']>10240000){//10메가
+        echo "<script>alert('10메가 이하만 첨부할 수 있습니다.');history.back();</script>";
+        exit;
+    }
 
+    if($_FILES['upfile']['type']!='image/jpeg' and $_FILES['upfile']['type']!='image/gif' and $_FILES['upfile']['type']!='image/png'){//이미지가 아니면, 다른 type은 and로 추가
+        echo "<script>alert('이미지만 첨부할 수 있습니다.');history.back();</script>";
+        exit;
+    }
 
-if(count($_FILES["upfile"]["name"])>0){//첨부한 파일이 있으면
-
-    for($k=0;$k<count($_FILES["upfile"]["name"]);$k++){
-
-        if($_FILES['upfile']['size'][$k]>10240000){//10메가
-            echo "<script>alert('10메가 이하만 첨부할 수 있습니다.');history.back();</script>";
-            exit;
-        }
-
-        if($_FILES['upfile']['type'][$k]!='image/jpeg' and $_FILES['upfile']['type'][$k]!='image/gif' and $_FILES['upfile']['type'][$k]!='image/png'){//이미지가 아니면, 다른 type은 and로 추가
-            echo "<script>alert('이미지만 첨부할 수 있습니다.');history.back();</script>";
-            exit;
-        }
-        $save_dir = '/var/www/html/';
-        // $save_dir = $_SERVER['DOCUMENT_ROOT']."/data/";//파일을 업로드할 디렉토리 "이렇게 입력이 되어있지만 안먹혀서 안쓸예정!!!!!!!!!!"
-        $filename = $_FILES["upfile"]["name"][$k];
-        $ext = pathinfo($filename,PATHINFO_EXTENSION);//확장자 구하기
-        $newfilename = date("YmdHis").substr(rand(),0,6);
-        $upfile = $newfilename.".".$ext;//새로운 파일이름과 확장자를 합친다
-       
-        if(move_uploaded_file($_FILES["upfile"]["tmp_name"][$k], $save_dir.$upfile)){//파일 등록에 성공하면 디비에 등록해준다.
-            //$sql="INSERT INTO testdb.file_table "잘못된 테이블 인듯!!!!!!!!!!!!!!"
-            $sql="insert into file_table
-            (bid, userid, filename)
-            values (".$bid.", '".$_SESSION['UID']."', '".$upfile."')";
-            $result=$mysqli->query($sql) or die($mysqli->error);
-        }
-
+    $save_dir = "/var/www/html/data/";//파일을 업로드할 디렉토리
+    $filename = $_FILES["upfile"]["name"];
+    $ext = pathinfo($filename,PATHINFO_EXTENSION);//확장자 구하기
+    $newfilename = date("YmdHis").substr(rand(),0,6);
+    $upfile = $newfilename.".".$ext;//새로운 파일이름과 확장자를 합친다
+   
+    if(move_uploaded_file($_FILES["upfile"]["tmp_name"], $save_dir.$upfile)){//파일 등록에 성공하면 디비에 등록해준다.
+        $sql="INSERT INTO jin.file_table
+        (bid, userid, filename)
+        VALUES(".$bid.", '".$_SESSION['UID']."', '".$upfile."')";
+        $result=$mysqli->query($sql) or die($mysqli->error);
     }
 
 }

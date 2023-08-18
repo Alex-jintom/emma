@@ -17,9 +17,7 @@ $firstPageNumber  = $_GET['firstPageNumber'];
 
 $sql = "select b.*, if((now() - regdate)<=86400,1,0) as newid
 ,(select count(*) from memo m where m.status=1 and m.bid=b.bid) as memocnt
-
 ,(select m.regdate from memo m where m.status=1 and m.bid=b.bid order by m.memoid desc limit 1) as memodate
-
 ,(select count(*) from file_table f where f.status=1 and f.bid=b.bid) as filecnt
 from board b where 1=1";
 $sql .= " and status=1";
@@ -85,7 +83,7 @@ if($firstPageNumber > $totalPage) {
                               </svg>";
                             }
                         ?>  
-                    <a href="view.php?bid=<?php echo $r->bid;?>"><?php echo $subject?></a>
+                    <a href="/view.php?bid=<?php echo $r->bid;?>"><?php echo $subject?></a>
                     <?php if($r->filecnt){?>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-card-image" viewBox="0 0 16 16">
                         <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
@@ -180,8 +178,6 @@ if($firstPageNumber > $totalPage) {
         });
     });
 </script>
-
-
 
 <?php
 include "footer.php";
