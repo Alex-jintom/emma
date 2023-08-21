@@ -2,7 +2,6 @@
 include "dbcon.php";//dbcon.php 안에는 session_start()가 없기때문에 위에 따로 선언해준다.
 
 
-
 if(!$_SESSION['UID']){
     echo "<script>alert('회원 전용 게시판입니다.');location.href='index.php';</script>";
     exit;
@@ -44,48 +43,103 @@ $result=$mysqli->query($sql) or die($mysqli->error);
 if(!$bid)$bid = $mysqli -> insert_id;
 
 
-$file_name = $_FILES['upload_file']['name'];
-$tmp_file = $_FILES['upload_file']['name'];
-
-$file_path = '/var/www/html/data/'.$file_name;
-
-$r = move_uploaded_file($tmp_file, $file_path);
 
 
 
 
 
-if(count($_FILES["upfile"]["name"])>0){//첨부한 파일이 있으면
+    // 임시 저장된 정보
+    $myTempFile = $_FILES['imgFile']['tmp_name'];
 
-    for($k=0;$k<count($_FILES["upfile"]["name"]);$k++){
 
-        if($_FILES['upfile']['size'][$k]>10240000){//10메가
-            echo "<script>alert('10메가 이하만 첨부할 수 있습니다.');history.back();</script>";
-            exit;
+    // 파일명을 기존의 파일명을 그대로 쓰고 싶은 경우
+    $fileName = $_FILES['imgFile']['name'];
+    // 파일 타입 및 확장자 구하기
+    //$fileTypeExtension = explode("/", $_FILES['imgFile']['type']);
+
+    // 파일 타입
+    //$fileType = $fileTypeExtension[0];
+    // 파일 확장자
+    //$extention = $fileTypeExtension[1];
+
+    // 확장자 검사
+    $isExtGood = true;
+
+    //switch ($extention) {
+     // case 'jpeg':
+     // case 'bmp':
+     // case 'gif':
+     // case 'png':
+     //   $isExtGood = true;
+     //   break;
+      //default:
+      //  echo "허용하는 확장자는 jpg, bmp, gif, png 입니다. - switch";
+     //   exit;
+      //  break;
+    //}
+
+    // 이미지 파일이 맞는지 확인
+    //if ($fileType  == 'image') {
+      // 허용할 확장자를 jpg, bmp, gif, png로 정함, 그 외는 업로드 불가
+      if ($isExtGood) {
+        // 임시 파일 옮길 폴더 및 파일명
+        $myFile = "/var/www/html/data/./{$fileName}";
+        // 임시 저장된 파일을 우리가 저장할 장소 및 파일명으로 옮김
+        $imageUpload = move_uploaded_file($myTempFile, $myFile);
+
+        // 업로드 성공 여부 확인
+        if ($imageUpload == true) {
+          echo "파일이 정상적으로 업로드 되었습니다. <br>";
+          echo "<img src='{$myFile}' width='200' />";
         }
+      }
+      // 확장자가 jpg, bmp, gif, png가 아닐때
+      else {
+        echo "허용하는 확장자는 jpg, bmp, gif, png 입니다. - else";
+        exit;
+      }
+    //}
+    // type이 image가 아닐때
+   // else {
+     // echo "이미지 파일이 아닙니다.";
+      //exit;
+  //  }
 
-        if($_FILES['upfile']['type'][$k]!='image/jpeg' and $_FILES['upfile']['type'][$k]!='image/gif' and $_FILES['upfile']['type'][$k]!='image/png'){//이미지가 아니면, 다른 type은 and로 추가
-            echo "<script>alert('이미지만 첨부할 수 있습니다.');history.back();</script>";
-            exit;
-        }
-        $save_dir = "/var/www/html/data/";
-        // $save_dir = $_SERVER['DOCUMENT_ROOT']."/data/";//파일을 업로드할 디렉토리 "이렇게 입력이 되어있지만 안먹혀서 안쓸예정!!!!!!!!!!"
-        $filename = $_FILES["upfile"]["name"][$k];
-        $ext = pathinfo($filename,PATHINFO_EXTENSION);//확장자 구하기
-        $newfilename = date("YmdHis").substr(rand(),0,6);
-        $upfile = $newfilename.".".$ext;//새로운 파일이름과 확장자를 합친다
-       
-        if(move_uploaded_file($_FILES["upfile"]["tmp_name"][$k], $save_dir.$upfile)){//파일 등록에 성공하면 디비에 등록해준다.
-            //$sql="INSERT INTO testdb.file_table "잘못된 테이블 인듯!!!!!!!!!!!!!!"
-            $sql="insert into file_table
-            (bid, userid, filename)
-            values (".$bid.", '".$_SESSION['UID']."', '".$upfile."')";
-            $result=$mysqli->query($sql) or die($mysqli->error);
-        }
 
+
+
+
+
+ 
+
+//if($_FILES["upfile"]["name"]){//첨부한 파일이 있으면
+
+    if($_FILES['upfile']['size']>10240000){//10메가
+        echo "<script>alert('10메가 이하만 첨부할 수 있습니다.');history.back();</script>";
+        exit;
     }
 
-}
+    if($_FILES['upfile']['type']!='image/jpeg' and $_FILES['upfile']['type']!='image/gif' and $_FILES['upfile']['type']!='image/png' and $_FILES['upfile']['type']!='image/jpg'){//이미지가 아니면, 다른 type은 and로 추가
+        echo "<script>alert('이미지만 첨부할 수 있습니다.');history.back();</script>";
+        exit;
+    }
+
+    $save_dir = "/var/www/html/data/";//파일을 업로드할 디렉토리
+    $filename = $_FILES["upfile"]["name"];
+    $ext = pathinfo($filename,PATHINFO_EXTENSION);//확장자 구하기
+    $newfilename = date("YmdHis").substr(rand(),0,6);
+    $upfile = $newfilename.".".$ext;//새로운 파일이름과 확장자를 합친다
+
+   
+   // if(move_uploaded_file($_FILES["upfile"]["tmp_name"], $save_dir.$upfile)){//파일 등록에 성공하면 디비에 등록해준다.
+        move_uploaded_file($_FILES["upfile"]["tmp_name"], $save_dir.$upfile);
+      $sql="INSERT INTO jin.file_table
+        (bid, userid, filename)
+        VALUES(".$bid.", '".$_SESSION['UID']."', '".$upfile."')";
+        $result=$mysqli->query($sql) or die($mysqli->error);
+    //}
+
+//}
 
 
 if($result){
