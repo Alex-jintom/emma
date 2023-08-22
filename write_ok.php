@@ -45,7 +45,7 @@ if(!$bid)$bid = $mysqli -> insert_id;
 
 
 
-
+//추가한 코드//
 
 
     // 임시 저장된 정보
@@ -63,7 +63,7 @@ if(!$bid)$bid = $mysqli -> insert_id;
     //$extention = $fileTypeExtension[1];
 
     // 확장자 검사
-    $isExtGood = true;
+    //$isExtGood = true;
 
     //switch ($extention) {
      // case 'jpeg':
@@ -81,9 +81,9 @@ if(!$bid)$bid = $mysqli -> insert_id;
     // 이미지 파일이 맞는지 확인
     //if ($fileType  == 'image') {
       // 허용할 확장자를 jpg, bmp, gif, png로 정함, 그 외는 업로드 불가
-      if ($isExtGood) {
+      //if ($isExtGood) {
         // 임시 파일 옮길 폴더 및 파일명
-        $myFile = "/var/www/html/data/./{$fileName}";
+        $myFile = "/var/www/html/data/".$fileName;
         // 임시 저장된 파일을 우리가 저장할 장소 및 파일명으로 옮김
         $imageUpload = move_uploaded_file($myTempFile, $myFile);
 
@@ -92,7 +92,7 @@ if(!$bid)$bid = $mysqli -> insert_id;
           echo "파일이 정상적으로 업로드 되었습니다. <br>";
           echo "<img src='{$myFile}' width='200' />";
         }
-      }
+      //}
       // 확장자가 jpg, bmp, gif, png가 아닐때
       else {
         echo "허용하는 확장자는 jpg, bmp, gif, png 입니다. - else";
@@ -106,7 +106,7 @@ if(!$bid)$bid = $mysqli -> insert_id;
   //  }
 
 
-
+//여기까지 추가한 코드//
 
 
 
