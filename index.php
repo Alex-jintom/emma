@@ -151,7 +151,7 @@ if($firstPageNumber > $totalPage) {
         </p>
 
 <script>
-    $("#more_button").click(function () {
+  /*  $("#more_button").click(function () {
        
         var data = {//more_list_page.php에 넘겨주는 파라미터 값이다.
             pageNumber : $('#nextPageNumber').val() ,
@@ -176,7 +176,7 @@ if($firstPageNumber > $totalPage) {
                     }
                 }
         });
-    });
+      });
 </script>
 
 <?php
