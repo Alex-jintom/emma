@@ -44,7 +44,7 @@ while($recs = $rec_result->fetch_object()){
         <?php
           foreach($fileArray as $fa){
         ?>
-          <p><img src="./data/<?php echo $fa->filename;?>"></p>
+          <p><img src="/var/www/html/data/<?php echo $fa->filename;?>"></p>
         <?php }?>
         <p>
           <?php echo $rs->content;?>
@@ -287,6 +287,8 @@ while($recs = $rec_result->fetch_object()){
     }
 
 </script>
+
+
       <?php
 include "footer.php";
 ?>
