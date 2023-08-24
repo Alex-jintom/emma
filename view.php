@@ -12,12 +12,11 @@ while($mrs = $memo_result->fetch_object()){
     $memoArray[]=$mrs;
 }
 
-/*$fquery="select * from file_table where status=1 and bid=".$rs->bid." order by fid asc";
+$fquery="select * from file_table where status=1 and bid=".$rs->bid." order by fid asc";
 $file_result = $mysqli->query($fquery) or die("query error => ".$mysqli->error);
 while($frs = $file_result->fetch_object()){
     $fileArray[]=$frs;
 }
-*/
 
 
 $query2="select type,count(*) as cnt from recommend r where bid=".$rs->bid." group by type";
@@ -46,7 +45,7 @@ while($recs = $rec_result->fetch_object()){
         <?php
           foreach($fileArray as $fa){
         ?>
-          <p><img src="/var/www/html/data/<?php echo $fa->filename;?>"></p>
+          <p><img src="/data/<?php echo $fa->filename;?>"></p>
         <?php }?>
         <p>
           <?php echo $rs->content;?>
