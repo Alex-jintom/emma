@@ -1,186 +1,615 @@
-<?php
-include "header.php";
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>eElectronics - HTML eCommerce Template</title>
+    
+    <!-- Google Fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Titillium+Web:400,200,300,700,600' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Raleway:400,100' rel='stylesheet' type='text/css'>
+    
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/owl.carousel.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/responsive.css">
 
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+   
+    <div class="header-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="user-menu">
+                        <ul>
+                            <li><a href="#"><i class="fa fa-user"></i> My Account</a></li>
+                            <li><a href="#"><i class="fa fa-heart"></i> Wishlist</a></li>
+                            <li><a href="cart.html"><i class="fa fa-user"></i> My Cart</a></li>
+                            <li><a href="checkout.html"><i class="fa fa-user"></i> Checkout</a></li>
+                            <li><a href="#"><i class="fa fa-user"></i> Login</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="header-right">
+                        <ul class="list-unstyled list-inline">
+                            <li class="dropdown dropdown-small">
+                                <a data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle" href="#"><span class="key">currency :</span><span class="value">USD </span><b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">USD</a></li>
+                                    <li><a href="#">INR</a></li>
+                                    <li><a href="#">GBP</a></li>
+                                </ul>
+                            </li>
 
-$search_keyword = $_GET['search_keyword'];
-
-if($search_keyword){
-    $search_where = " and (subject like '%".$search_keyword."%' or content like '%".$search_keyword."%')";
-}
-
-$pageNumber  = $_GET['pageNumber']??1;//현재 페이지, 없으면 1
-if($pageNumber < 1) $pageNumber = 1;
-$pageCount  = $_GET['pageCount']??10;//페이지당 몇개씩 보여줄지, 없으면 10
-$startLimit = ($pageNumber-1)*$pageCount;//쿼리의 limit 시작 부분
-$firstPageNumber  = $_GET['firstPageNumber'];
-
-
-$sql = "select b.*, if((now() - regdate)<=86400,1,0) as newid
-,(select count(*) from memo m where m.status=1 and m.bid=b.bid) as memocnt
-,(select m.regdate from memo m where m.status=1 and m.bid=b.bid order by m.memoid desc limit 1) as memodate
-,(select count(*) from file_table f where f.status=1 and f.bid=b.bid) as filecnt
-from board b where 1=1";
-$sql .= " and status=1";
-$sql .= $search_where;
-$order = " order by ifnull(parent_id, bid) desc, bid asc";
-$limit = " limit $startLimit, $pageCount";
-$query = $sql.$order.$limit;
-//echo "query=>".$query."<br>";
-$result = $mysqli->query($query) or die("query error => ".$mysqli->error);
-while($rs = $result->fetch_object()){
-    $rsc[]=$rs;
-}
-
-//전체게시물 수 구하기
-$sqlcnt = "select count(*) as cnt from board where 1=1";
-$sqlcnt .= " and status=1";
-$sqlcnt .= $search_where;
-$countresult = $mysqli->query($sqlcnt) or die("query error => ".$mysqli->error);
-$rscnt = $countresult->fetch_object();
-$totalCount = $rscnt->cnt;//전체 게시물 갯수를 구한다.
-$totalPage = ceil($totalCount/$pageCount);//전체 페이지를 구한다.
-
-if($firstPageNumber < 1) $firstPageNumber = 1;
-$lastPageNumber = $firstPageNumber + $pageCount - 1;//페이징 나오는 부분에서 레인지를 정한다.
-if($lastPageNumber > $totalPage) $lastPageNumber = $totalPage;
-
-if($firstPageNumber > $totalPage) {
-    echo "<script>alert('더 이상 페이지가 없습니다.');history.back();</script>";
-    exit;
-}
-
-
-?>
-        <!-- 더보기 버튼을 클릭하면 다음 페이지를 넘겨주기 위해 현재 페이지에 1을 더한 값을 준비한다. 더보기를 클릭할때마다 1씩 더해준다. -->
-        <input type="hidden" name="nextPageNumber" id="nextPageNumber" value="<?php echo $pageNumber+1;?>">
-        <table class="table">
-        <thead>
-            <tr>
-            <th scope="col">번호</th>
-            <th scope="col">글쓴이</th>
-            <th scope="col">제목</th>
-            <th scope="col">등록일</th>
-            </tr>
-        </thead>
-        <tbody id="board_list">
-            <?php
-                $idNumber = $totalCount - ($pageNumber-1)*$pageCount;
-                foreach($rsc as $r){
-                    //검색어만 하이라이트 해준다.
-                    $subject = str_replace($search_keyword,"<span style='color:red;'>".$search_keyword."</
-                        span>",$r->subject);
-                   
-            ?>
-
-                <tr>
-                    <th scope="row"><?php echo $idNumber--;?></th>
-                    <td><?php echo $r->userid?></td>
-                    <td>
-                        <?php
-                            if($r->parent_id){
-                                echo "&nbsp;&nbsp;<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-arrow-return-right\" viewBox=\"0 0 16 16\">
-                                <path fill-rule=\"evenodd\" d=\"M1.5 1.5A.5.5 0 0 0 1 2v4.8a2.5 2.5 0 0 0 2.5 2.5h9.793l-3.347 3.346a.5.5 0 0 0 .708.708l4.2-4.2a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 8.3H3.5A1.5 1.5 0 0 1 2 6.8V2a.5.5 0 0 0-.5-.5z\"/>
-                              </svg>";
-                            }
-                        ?>  
-                    <a href="/view.php?bid=<?php echo $r->bid;?>"><?php echo $subject?></a>
-                    <?php if($r->filecnt){?>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-card-image" viewBox="0 0 16 16">
-                        <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
-                        <path d="M1.5 2A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13zm13 1a.5.5 0 0 1 .5.5v6l-3.775-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12v.54A.505.505 0 0 1 1 12.5v-9a.5.5 0 0 1 .5-.5h13z"/>
-                        </svg>
-                    <?php }?>
-                    <?php if($r->memocnt){?>
-                        <span <?php if((time()-strtotime($r->memodate))<=86400){ echo "style='color:red;'";}?>>
-                            [<?php echo $r->memocnt;?>]
-                        </span>
-                    <?php }?>
-                    <?php if($r->newid){?>
-                        <span class="badge bg-danger">New</span>
-                    <?php }?>
-                </td>
-                    <td><?php echo $r->regdate?></td>
-                </tr>
-            <?php }?>
-        </tbody>
-        </table>
-       <!--
-        <div class="d-grid gap-2" style="margin:20px;">
-            <button class="btn btn-secondary" type="button" id="more_button">더보기</button>
+                            <li class="dropdown dropdown-small">
+                                <a data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle" href="#"><span class="key">language :</span><span class="value">English </span><b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">English</a></li>
+                                    <li><a href="#">French</a></li>
+                                    <li><a href="#">German</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
-        -->
-        <form method="get" action="<?php echo $_SERVER["PHP_SELF"]?>">
-        <div class="input-group mb-12" style="margin:auto;width:50%;">
-                <input type="text" class="form-control" name="search_keyword" id="search_keyword" placeholder="제목과 내용에서 검색합니다." value="<?php echo $search_keyword;?>" aria-label="Recipient's username" aria-describedby="button-addon2">
-                <button class="btn btn-outline-secondary" type="button" id="search">검색</button>
+    </div> <!-- End header area -->
+    
+    <div class="site-branding-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="logo">
+                        <h1><a href="index.php">e<span>Electronics</span></a></h1>
+                    </div>
+                </div>
+                
+                <div class="col-sm-6">
+                    <div class="shopping-item">
+                        <a href="cart.html">Cart - <span class="cart-amunt">$800</span> <i class="fa fa-shopping-cart"></i> <span class="product-count">5</span></a>
+                    </div>
+                </div>
+            </div>
         </div>
-        </form>
-         <p>
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item">
-                        <a class="page-link" href="<?php echo $_SERVER['PHP_SELF']?>?pageNumber=<?php echo $firstPageNumber-$pageCount;?>&firstPageNumber=<?php echo $firstPageNumber-$pageCount;?>&search_keyword=<?php echo $search_keyword;?>">Previous</a>
-                    </li>
-                    <?php
-                        for($i=$firstPageNumber;$i<=$lastPageNumber;$i++){
-                    ?>
-                        <li class="page-item <?php if($pageNumber==$i){echo "active";}?>"><a class="page-link" href="<?php echo $_SERVER['PHP_SELF']?>?pageNumber=<?php echo $i;?>&firstPageNumber=<?php echo $firstPageNumber;?>&search_keyword=<?php echo $search_keyword;?>"><?php echo $i;?></a></li>
-                    <?php
-                        }
-                    ?>
-                    <li class="page-item">
-                        <a class="page-link" href="<?php echo $_SERVER['PHP_SELF']?>?pageNumber=<?php echo $firstPageNumber+$pageCount;?>&firstPageNumber=<?php echo $firstPageNumber+$pageCount;?>&search_keyword=<?php echo $search_keyword;?>">Next</a>
-                    </li>
-                </ul>
-            </nav>
-        </p> 
+    </div> <!-- End site branding area -->
+    
+    <div class="mainmenu-area">
+        <div class="container">
+            <div class="row">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div> 
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="index.php">Home</a></li>
+                        <li><a href="shop.html">Shop page</a></li>
+                        <li><a href="single-product.html">Single product</a></li>
+                        <li><a href="cart.html">Cart</a></li>
+                        <li><a href="checkout.html">Checkout</a></li>
+                        <li><a href="#">Category</a></li>
+                        <li><a href="#">Others</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>  
+            </div>
+        </div>
+    </div> <!-- End mainmenu area -->
+    
+    <div class="slider-area">
+        <div class="zigzag-bottom"></div>
+        <div id="slide-list" class="carousel carousel-fade slide" data-ride="carousel">
+            
+            <div class="slide-bulletz">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <ol class="carousel-indicators slide-indicators">
+                                <li data-target="#slide-list" data-slide-to="0" class="active"></li>
+                                <li data-target="#slide-list" data-slide-to="1"></li>
+                                <li data-target="#slide-list" data-slide-to="2"></li>
+                            </ol>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <p style="text-align:right;">
+            <div class="carousel-inner" role="listbox">
+                <div class="item active">
+                    <div class="single-slide">
+                        <div class="slide-bg slide-one"></div>
+                        <div class="slide-text-wrapper">
+                            <div class="slide-text">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-md-6 col-md-offset-6">
+                                            <div class="slide-content">
+                                                <h2>We are awesome</h2>
+                                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur, dolorem, excepturi. Dolore aliquam quibusdam ut quae iure vero exercitationem ratione!</p>
+                                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi ab molestiae minus reiciendis! Pariatur ab rerum, sapiente ex nostrum laudantium.</p>
+                                                <a href="" class="readmore">Learn more</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="single-slide">
+                        <div class="slide-bg slide-two"></div>
+                        <div class="slide-text-wrapper">
+                            <div class="slide-text">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-md-6 col-md-offset-6">
+                                            <div class="slide-content">
+                                                <h2>We are great</h2>
+                                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe aspernatur, dolorum harum molestias tempora deserunt voluptas possimus quos eveniet, vitae voluptatem accusantium atque deleniti inventore. Enim quam placeat expedita! Quibusdam!</p>
+                                                <a href="" class="readmore">Learn more</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="single-slide">
+                        <div class="slide-bg slide-three"></div>
+                        <div class="slide-text-wrapper">
+                            <div class="slide-text">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-md-6 col-md-offset-6">
+                                            <div class="slide-content">
+                                                <h2>We are superb</h2>
+                                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores, eius?</p>
+                                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deleniti voluptates necessitatibus dicta recusandae quae amet nobis sapiente explicabo voluptatibus rerum nihil quas saepe, tempore error odio quam obcaecati suscipit sequi.</p>
+                                                <a href="" class="readmore">Learn more</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-            <?php
-                if($_SESSION['UID']){
-            ?>
-                <a href="write.php"><button type="button" class="btn btn-primary">등록</button><a>
-                <a href="logout.php"><button type="button" class="btn btn-primary">로그아웃</button><a>
-            <?php
-                }else{
-            ?>
-                <a href="login.php"><button type="button" class="btn btn-primary">로그인</button><a>
-                <a href="signup.php"><button type="button" class="btn btn-primary">회원가입</button><a>
-            <?php
-                }
-            ?>
-        </p>
+        </div>        
+    </div> <!-- End slider area -->
+    
+    <div class="promo-area">
+        <div class="zigzag-bottom"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-sm-6">
+                    <div class="single-promo">
+                        <i class="fa fa-refresh"></i>
+                        <p>30 Days return</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="single-promo">
+                        <i class="fa fa-truck"></i>
+                        <p>Free shipping</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="single-promo">
+                        <i class="fa fa-lock"></i>
+                        <p>Secure payments</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="single-promo">
+                        <i class="fa fa-gift"></i>
+                        <p>New products</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- End promo area -->
+    
+    <div class="maincontent-area">
+        <div class="zigzag-bottom"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="latest-product">
+                        <h2 class="section-title">Latest Products</h2>
+                        <div class="product-carousel">
+                            <div class="single-product">
+                                <div class="product-f-image">
+                                    <img src="img/product-1.jpg" alt="">
+                                    <div class="product-hover">
+                                        <a href="#" class="add-to-cart-link"><i class="fa fa-shopping-cart"></i> Add to cart</a>
+                                        <a href="single-product.html" class="view-details-link"><i class="fa fa-link"></i> See details</a>
+                                    </div>
+                                </div>
+                                
+                                <h2><a href="single-product.html">Sony Smart TV - 2015</a></h2>
+                                
+                                <div class="product-carousel-price">
+                                    <ins>$700.00</ins> <del>$800.00</del>
+                                </div> 
+                            </div>
+                            <div class="single-product">
+                                <div class="product-f-image">
+                                    <img src="img/product-2.jpg" alt="">
+                                    <div class="product-hover">
+                                        <a href="#" class="add-to-cart-link"><i class="fa fa-shopping-cart"></i> Add to cart</a>
+                                        <a href="single-product.html" class="view-details-link"><i class="fa fa-link"></i> See details</a>
+                                    </div>
+                                </div>
+                                
+                                <h2><a href="single-product.html">Apple new mac book 2015 March :P</a></h2>
+                                <div class="product-carousel-price">
+                                    <ins>$899.00</ins> <del>$999.00</del>
+                                </div> 
+                            </div>
+                            <div class="single-product">
+                                <div class="product-f-image">
+                                    <img src="img/product-3.jpg" alt="">
+                                    <div class="product-hover">
+                                        <a href="#" class="add-to-cart-link"><i class="fa fa-shopping-cart"></i> Add to cart</a>
+                                        <a href="single-product.html" class="view-details-link"><i class="fa fa-link"></i> See details</a>
+                                    </div>
+                                </div>
+                                
+                                <h2><a href="single-product.html">Apple new i phone 6</a></h2>
 
-<script>
-  /*  $("#more_button").click(function () {
-       
-        var data = {//more_list_page.php에 넘겨주는 파라미터 값이다.
-            pageNumber : $('#nextPageNumber').val() ,
-            pageCount : <?php echo $pageCount;?>,
-            totalCount : <?php echo $totalCount;?>,
-            search_keyword : <?php echo $search_keyword;?>
-        };
-            $.ajax({
-                async : false ,
-                type : 'post' ,//post방식으로 넘겨준다. ajax는 반드시 post로 해준다.
-                url : 'more_list_page.php' ,
-                data  : data ,//위에서 만든 파라미터들을 넘겨준다.
-                dataType : 'html' ,//리턴받을 형식이다. html말고 text난 json도 있다. json을 가장 많이 쓴다.
-                error : function() {} ,
-                success : function(return_data) {
-                    if(return_data==false){
-                        alert('마지막 페이지입니다.');
-                        return;
-                    }else{
-                        $("#board_list").append(return_data);//table 마지막에 붙여준다. 반대는 prepend가 있다.
-                        $("#nextPageNumber").val(parseInt($('#nextPageNumber').val())+1);//다음페이지를 위해 1씩 증가해준다.
-                    }
-                }
-        });
-      });
-</script>
+                                <div class="product-carousel-price">
+                                    <ins>$400.00</ins> <del>$425.00</del>
+                                </div>                                 
+                            </div>
+                            <div class="single-product">
+                                <div class="product-f-image">
+                                    <img src="img/product-4.jpg" alt="">
+                                    <div class="product-hover">
+                                        <a href="#" class="add-to-cart-link"><i class="fa fa-shopping-cart"></i> Add to cart</a>
+                                        <a href="single-product.html" class="view-details-link"><i class="fa fa-link"></i> See details</a>
+                                    </div>
+                                </div>
+                                
+                                <h2><a href="single-product.html">Sony playstation microsoft</a></h2>
 
-<?php
-include "footer.php";
-?>
+                                <div class="product-carousel-price">
+                                    <ins>$200.00</ins> <del>$225.00</del>
+                                </div>                            
+                            </div>
+                            <div class="single-product">
+                                <div class="product-f-image">
+                                    <img src="img/product-5.jpg" alt="">
+                                    <div class="product-hover">
+                                        <a href="#" class="add-to-cart-link"><i class="fa fa-shopping-cart"></i> Add to cart</a>
+                                        <a href="single-product.html" class="view-details-link"><i class="fa fa-link"></i> See details</a>
+                                    </div>
+                                </div>
+                                
+                                <h2><a href="single-product.html">Sony Smart Air Condtion</a></h2>
+
+                                <div class="product-carousel-price">
+                                    <ins>$1200.00</ins> <del>$1355.00</del>
+                                </div>                                 
+                            </div>
+                            <div class="single-product">
+                                <div class="product-f-image">
+                                    <img src="img/product-6.jpg" alt="">
+                                    <div class="product-hover">
+                                        <a href="#" class="add-to-cart-link"><i class="fa fa-shopping-cart"></i> Add to cart</a>
+                                        <a href="single-product.html" class="view-details-link"><i class="fa fa-link"></i> See details</a>
+                                    </div>
+                                </div>
+                                
+                                <h2><a href="single-product.html">Samsung gallaxy note 4</a></h2>
+
+                                <div class="product-carousel-price">
+                                    <ins>$400.00</ins>
+                                </div>                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- End main content area -->
+    
+    <div class="brands-area">
+        <div class="zigzag-bottom"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="brand-wrapper">
+                        <h2 class="section-title">Brands</h2>
+                        <div class="brand-list">
+                            <img src="img/services_logo__1.jpg" alt="">
+                            <img src="img/services_logo__2.jpg" alt="">
+                            <img src="img/services_logo__3.jpg" alt="">
+                            <img src="img/services_logo__4.jpg" alt="">
+                            <img src="img/services_logo__1.jpg" alt="">
+                            <img src="img/services_logo__2.jpg" alt="">
+                            <img src="img/services_logo__3.jpg" alt="">
+                            <img src="img/services_logo__4.jpg" alt="">                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- End brands area -->
+    
+    <div class="product-widget-area">
+        <div class="zigzag-bottom"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="single-product-widget">
+                        <h2 class="product-wid-title">Top Sellers</h2>
+                        <a href="" class="wid-view-more">View All</a>
+                        <div class="single-wid-product">
+                            <a href="single-product.html"><img src="img/product-thumb-1.jpg" alt="" class="product-thumb"></a>
+                            <h2><a href="single-product.html">Sony Smart TV - 2015</a></h2>
+                            <div class="product-wid-rating">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                            </div>
+                            <div class="product-wid-price">
+                                <ins>$400.00</ins> <del>$425.00</del>
+                            </div>                            
+                        </div>
+                        <div class="single-wid-product">
+                            <a href="single-product.html"><img src="img/product-thumb-2.jpg" alt="" class="product-thumb"></a>
+                            <h2><a href="single-product.html">Apple new mac book 2015</a></h2>
+                            <div class="product-wid-rating">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                            </div>
+                            <div class="product-wid-price">
+                                <ins>$400.00</ins> <del>$425.00</del>
+                            </div>                            
+                        </div>
+                        <div class="single-wid-product">
+                            <a href="single-product.html"><img src="img/product-thumb-3.jpg" alt="" class="product-thumb"></a>
+                            <h2><a href="single-product.html">Apple new i phone 6</a></h2>
+                            <div class="product-wid-rating">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                            </div>
+                            <div class="product-wid-price">
+                                <ins>$400.00</ins> <del>$425.00</del>
+                            </div>                            
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="single-product-widget">
+                        <h2 class="product-wid-title">Recently Viewed</h2>
+                        <a href="#" class="wid-view-more">View All</a>
+                        <div class="single-wid-product">
+                            <a href="single-product.html"><img src="img/product-thumb-4.jpg" alt="" class="product-thumb"></a>
+                            <h2><a href="single-product.html">Sony playstation microsoft</a></h2>
+                            <div class="product-wid-rating">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                            </div>
+                            <div class="product-wid-price">
+                                <ins>$400.00</ins> <del>$425.00</del>
+                            </div>                            
+                        </div>
+                        <div class="single-wid-product">
+                            <a href="single-product.html"><img src="img/product-thumb-1.jpg" alt="" class="product-thumb"></a>
+                            <h2><a href="single-product.html">Sony Smart Air Condtion</a></h2>
+                            <div class="product-wid-rating">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                            </div>
+                            <div class="product-wid-price">
+                                <ins>$400.00</ins> <del>$425.00</del>
+                            </div>                            
+                        </div>
+                        <div class="single-wid-product">
+                            <a href="single-product.html"><img src="img/product-thumb-2.jpg" alt="" class="product-thumb"></a>
+                            <h2><a href="single-product.html">Samsung gallaxy note 4</a></h2>
+                            <div class="product-wid-rating">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                            </div>
+                            <div class="product-wid-price">
+                                <ins>$400.00</ins> <del>$425.00</del>
+                            </div>                            
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="single-product-widget">
+                        <h2 class="product-wid-title">Top New</h2>
+                        <a href="#" class="wid-view-more">View All</a>
+                        <div class="single-wid-product">
+                            <a href="single-product.html"><img src="img/product-thumb-3.jpg" alt="" class="product-thumb"></a>
+                            <h2><a href="single-product.html">Apple new i phone 6</a></h2>
+                            <div class="product-wid-rating">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                            </div>
+                            <div class="product-wid-price">
+                                <ins>$400.00</ins> <del>$425.00</del>
+                            </div>                            
+                        </div>
+                        <div class="single-wid-product">
+                            <a href="single-product.html"><img src="img/product-thumb-4.jpg" alt="" class="product-thumb"></a>
+                            <h2><a href="single-product.html">Samsung gallaxy note 4</a></h2>
+                            <div class="product-wid-rating">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                            </div>
+                            <div class="product-wid-price">
+                                <ins>$400.00</ins> <del>$425.00</del>
+                            </div>                            
+                        </div>
+                        <div class="single-wid-product">
+                            <a href="single-product.html"><img src="img/product-thumb-1.jpg" alt="" class="product-thumb"></a>
+                            <h2><a href="single-product.html">Sony playstation microsoft</a></h2>
+                            <div class="product-wid-rating">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                            </div>
+                            <div class="product-wid-price">
+                                <ins>$400.00</ins> <del>$425.00</del>
+                            </div>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- End product widget area -->
+    
+    <div class="footer-top-area">
+        <div class="zigzag-bottom"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-sm-6">
+                    <div class="footer-about-us">
+                        <h2>e<span>Electronics</span></h2>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perferendis sunt id doloribus vero quam laborum quas alias dolores blanditiis iusto consequatur, modi aliquid eveniet eligendi iure eaque ipsam iste, pariatur omnis sint! Suscipit, debitis, quisquam. Laborum commodi veritatis magni at?</p>
+                        <div class="footer-social">
+                            <a href="#" target="_blank"><i class="fa fa-facebook"></i></a>
+                            <a href="#" target="_blank"><i class="fa fa-twitter"></i></a>
+                            <a href="#" target="_blank"><i class="fa fa-youtube"></i></a>
+                            <a href="#" target="_blank"><i class="fa fa-linkedin"></i></a>
+                            <a href="#" target="_blank"><i class="fa fa-pinterest"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 col-sm-6">
+                    <div class="footer-menu">
+                        <h2 class="footer-wid-title">User Navigation </h2>
+                        <ul>
+                            <li><a href="#">My account</a></li>
+                            <li><a href="#">Order history</a></li>
+                            <li><a href="#">Wishlist</a></li>
+                            <li><a href="#">Vendor contact</a></li>
+                            <li><a href="#">Front page</a></li>
+                        </ul>                        
+                    </div>
+                </div>
+                
+                <div class="col-md-3 col-sm-6">
+                    <div class="footer-menu">
+                        <h2 class="footer-wid-title">Categories</h2>
+                        <ul>
+                            <li><a href="#">Mobile Phone</a></li>
+                            <li><a href="#">Home accesseries</a></li>
+                            <li><a href="#">LED TV</a></li>
+                            <li><a href="#">Computer</a></li>
+                            <li><a href="#">Gadets</a></li>
+                        </ul>                        
+                    </div>
+                </div>
+                
+                <div class="col-md-3 col-sm-6">
+                    <div class="footer-newsletter">
+                        <h2 class="footer-wid-title">Newsletter</h2>
+                        <p>Sign up to our newsletter and get exclusive deals you wont find anywhere else straight to your inbox!</p>
+                        <div class="newsletter-form">
+                            <form action="#">
+                                <input type="email" placeholder="Type your email">
+                                <input type="submit" value="Subscribe">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- End footer top area -->
+    
+    <div class="footer-bottom-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="copyright">
+                        <p>&copy; 2015 eElectronics. All Rights Reserved. Coded with <i class="fa fa-heart"></i> by <a href="http://wpexpand.com" target="_blank">WP Expand</a></p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="footer-card-icon">
+                        <i class="fa fa-cc-discover"></i>
+                        <i class="fa fa-cc-mastercard"></i>
+                        <i class="fa fa-cc-paypal"></i>
+                        <i class="fa fa-cc-visa"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- End footer bottom area -->
+   
+    <!-- Latest jQuery form server -->
+    <script src="https://code.jquery.com/jquery.min.js"></script>
+    
+    <!-- Bootstrap JS form CDN -->
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    
+    <!-- jQuery sticky menu -->
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/jquery.sticky.js"></script>
+    
+    <!-- jQuery easing -->
+    <script src="js/jquery.easing.1.3.min.js"></script>
+    
+    <!-- Main Script -->
+    <script src="js/main.js"></script>
+  </body>
+</html>
