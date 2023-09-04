@@ -126,14 +126,14 @@ while($rs = $result->fetch_object()){
 
                                             <td class="product-quantity">
                                                 <div class="quantity buttons_added">
-                                                    <input type="button" class="minus" value="-">
-                                                    <input type="number" size="4" class="input-text qty text" title="Qty" value="<?php echo $p->cnt;?>" min="0" step="1">
-                                                    <input type="button" class="plus" value="+">
+                                                    <input type="button" class="minus" id="<?php echo $p->cartid;?>" value="-">
+                                                    <input type="number" id="qty_<?php echo $p->cartid;?>" size="4" class="input-text qty text" title="Qty" value="<?php echo $p->cnt;?>" min="0" step="1">
+                                                    <input type="button" class="plus" id="<?php echo $p->cartid;?>" value="+">
                                                 </div>
                                             </td>
-
+                                            <input type="hidden" name="price" id="price_<?php echo $p->cartid;?>" value="<?php echo $p->sale_price;?>">
                                             <td class="product-subtotal">
-                                                <span class="amount"><?php echo number_format($p->sale_price*$p->cnt);?>원</span>
+                                                <span class="amount" id="amount_<?php echo $p->cartid;?>"><?php echo number_format($p->sale_price*$p->cnt);?>원</span>
                                             </td>
                                         </tr>
                                         <?php }?>
@@ -556,6 +556,36 @@ while($rs = $result->fetch_object()){
             </div>
         </div>
     </div> <!-- End footer bottom area -->
+<script>
+    $('.plus').click(function(){
+        var cid = $(this).attr("id");//cart 테이블 고유번호 cartid
+        var qty = parseInt($("#qty_"+cid).val())+1;//plus이므로 기존 값 가져와서 1을 더해줌
+        var price = parseInt($("#price_"+cid).val());//제품마다 가격이 다르므로 가격 가져옴.
+
+        var data = {
+            cid : cid,
+            qty : qty,
+            price : price
+        };
+            $.ajax({
+                async : false,
+                type : 'post' ,
+                url : 'cart_edit.php' ,
+                data  : data ,
+                dataType : 'json' ,//json으로 받음.
+                error : function() {} ,
+                success : function(return_data) {
+                    $("#amount_"+cid).text(number_format(return_data.price)+"원");
+                    $("#qty_"+cid).val(return_data.qty);
+                }
+        });
+       
+    });
+
+    function number_format(num){
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
+    }
+</script>
 
 <?php
 include "bot.php";
