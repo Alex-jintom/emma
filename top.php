@@ -1,6 +1,22 @@
 <?php session_start();
 include "dbcon.php";
+include "lang.php";
 ini_set( 'display_errors', '0' );
+
+function islanguage($n){
+
+    switch($n) {
+        case "kr":$rs="한국어";
+        break;
+        case "en":$rs="English";
+        break;
+        case "jp":$rs="日本語";
+        break;
+    }
+    return $rs;
+
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -24,7 +40,7 @@ ini_set( 'display_errors', '0' );
    
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/owl.carousel.css">
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="/css/responsive.css">
 
     <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
@@ -38,11 +54,11 @@ ini_set( 'display_errors', '0' );
                 <div class="col-md-8">
                     <div class="user-menu">
                         <ul>
-                            <li><a href="#"><i class="fa fa-user"></i> My Account</a></li>
-                            <li><a href="#"><i class="fa fa-heart"></i> Wishlist</a></li>
-                            <li><a href="cart.html"><i class="fa fa-user"></i> My Cart</a></li>
+                            <li><a href="#"><i class="fa fa-user"></i> <?php echo $_LANG[$_CONFIG["LANGSET"]]['top']['myaccount'];?></a></li>
+                            <li><a href="#"><i class="fa fa-heart"></i> <?php echo $_LANG[$_CONFIG["LANGSET"]]['top']['wishlist'];?></a></li>
+                            <li><a href="cart.php"><i class="fa fa-user"></i> My Cart</a></li>
                             <li><a href="checkout.html"><i class="fa fa-user"></i> Checkout</a></li>
-                            <li><a href="/member/login.php"><i class="fa fa-user"></i> Login</a></li>
+                            <li><a href="login.php"><i class="fa fa-user"></i> Login</a></li>
                         </ul>
                     </div>
                 </div>
@@ -60,11 +76,11 @@ ini_set( 'display_errors', '0' );
                             </li>
 
                             <li class="dropdown dropdown-small">
-                                <a data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle" href="#"><span class="key">language :</span><span class="value">English </span><b class="caret"></b></a>
+                                <a data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle" href="#"><span class="key"></span><span class="value"><?php echo islanguage($_CONFIG["LANGSET"]);?> </span><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#">English</a></li>
-                                    <li><a href="#">French</a></li>
-                                    <li><a href="#">German</a></li>
+                                    <li><a href="lang_set.php?langset=kr">한국어</a></li>
+                                    <li><a href="lang_set.php?langset=en">English</a></li>
+                                    <li><a href="lang_set.php?langset=jp">日本語</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -79,13 +95,13 @@ ini_set( 'display_errors', '0' );
             <div class="row">
                 <div class="col-sm-6">
                     <div class="logo">
-                        <h1><a href="index.php">e<span>Electronics</span></a></h1>
+                        <h1><a href="/">e<span>Electronics</span></a></h1>
                     </div>
                 </div>
                
                 <div class="col-sm-6">
                     <div class="shopping-item">
-                        <a href="cart.html">Cart - <span class="cart-amunt">$800</span> <i class="fa fa-shopping-cart"></i> <span class="product-count">5</span></a>
+                        <a href="cart.php">Cart - <span class="cart-amunt">$800</span> <i class="fa fa-shopping-cart"></i> <span class="product-count">5</span></a>
                     </div>
                 </div>
             </div>
@@ -105,10 +121,10 @@ ini_set( 'display_errors', '0' );
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="index.php">Home</a></li>
+                        <li class="active"><a href="/">Home</a></li>
                         <li><a href="shop.html">Shop page</a></li>
                         <li><a href="single-product.html">Single product</a></li>
-                        <li><a href="cart.html">Cart</a></li>
+                        <li><a href="cart.php">Cart</a></li>
                         <li><a href="checkout.html">Checkout</a></li>
                         <li><a href="#">Category</a></li>
                         <li><a href="#">Others</a></li>
