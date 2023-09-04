@@ -1,16 +1,16 @@
 <?php
 include "top.php";
-
+global $cvalarray;
 $sql = "select * from products p where 1=1";
 $sql .= " and ismain=1 and status=1";
 $order = " order by pid desc";//마지막에 등록한걸 먼저 보여줌
 $limit = " limit 5";
 $query = $sql.$order.$limit;
-//echo "query=>".$query."<br>";
 $result = $mysqli->query($query) or die("query error => ".$mysqli->error);
 while($rs = $result->fetch_object()){
     $rsc[]=$rs;
 }
+
 ?>
    
     <div class="slider-area">
@@ -147,10 +147,10 @@ while($rs = $result->fetch_object()){
                                     <img src="<?php echo $p->thumbnail;?>" style="height:272px;" alt="">
                                     <div class="product-hover">
                                         <a href="#" class="add-to-cart-link"><i class="fa fa-shopping-cart"></i> Add to cart</a>
-                                        <a href="single-product.html" class="view-details-link"><i class="fa fa-link"></i> See details</a>
+                                        <a href="products.php?pid=<?php echo $p->pid;?>" class="view-details-link"><i class="fa fa-link"></i> See details</a>
                                     </div>
                                 </div>
-                                <h2><a href="single-product.html"><?php echo $p->name;?></a></h2>
+                                <h2><a href="products.php?pid=<?php echo $p->pid;?>"><?php echo $p->name;?></a></h2>
                                 <div class="product-carousel-price">
                                     <ins><?php echo number_format($p->sale_price);?>원</ins> <del><?php echo number_format($p->price);?>원</del>
                                 </div>
@@ -196,8 +196,8 @@ while($rs = $result->fetch_object()){
                         <h2 class="product-wid-title">Top Sellers</h2>
                         <a href="" class="wid-view-more">View All</a>
                         <div class="single-wid-product">
-                            <a href="single-product.html"><img src="img/product-thumb-1.jpg" alt="" class="product-thumb"></a>
-                            <h2><a href="single-product.html">Sony Smart TV - 2015</a></h2>
+                            <a href="products.php"><img src="img/product-thumb-1.jpg" alt="" class="product-thumb"></a>
+                            <h2><a href="products.php">Sony Smart TV - 2015</a></h2>
                             <div class="product-wid-rating">
                                 <i class="fa fa-star"></i>
                                 <i class="fa fa-star"></i>
@@ -210,8 +210,8 @@ while($rs = $result->fetch_object()){
                             </div>                            
                         </div>
                         <div class="single-wid-product">
-                            <a href="single-product.html"><img src="img/product-thumb-2.jpg" alt="" class="product-thumb"></a>
-                            <h2><a href="single-product.html">Apple new mac book 2015</a></h2>
+                            <a href="products.php"><img src="img/product-thumb-2.jpg" alt="" class="product-thumb"></a>
+                            <h2><a href="products.php">Apple new mac book 2015</a></h2>
                             <div class="product-wid-rating">
                                 <i class="fa fa-star"></i>
                                 <i class="fa fa-star"></i>
@@ -224,8 +224,8 @@ while($rs = $result->fetch_object()){
                             </div>                            
                         </div>
                         <div class="single-wid-product">
-                            <a href="single-product.html"><img src="img/product-thumb-3.jpg" alt="" class="product-thumb"></a>
-                            <h2><a href="single-product.html">Apple new i phone 6</a></h2>
+                            <a href="products.php"><img src="img/product-thumb-3.jpg" alt="" class="product-thumb"></a>
+                            <h2><a href="products.php">Apple new i phone 6</a></h2>
                             <div class="product-wid-rating">
                                 <i class="fa fa-star"></i>
                                 <i class="fa fa-star"></i>
@@ -243,48 +243,25 @@ while($rs = $result->fetch_object()){
                     <div class="single-product-widget">
                         <h2 class="product-wid-title">Recently Viewed</h2>
                         <a href="#" class="wid-view-more">View All</a>
+<?php
+if($_COOKIE['recently_products']){//쿠키에 값이 있으면
+    $prs = json_decode($_COOKIE['recently_products']);//배열로 바꾼다.
+    krsort($prs);//키값 기준으로 역순으로 정렬한다. 최근에 본걸 맨위에 올리기 위해서다.
+    $t=0;
+    foreach($prs as $ps){
+?>
                         <div class="single-wid-product">
-                            <a href="single-product.html"><img src="img/product-thumb-4.jpg" alt="" class="product-thumb"></a>
-                            <h2><a href="single-product.html">Sony playstation microsoft</a></h2>
-                            <div class="product-wid-rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
+                            <a href="products.php?pid=<?php echo $ps->pid;?>"><img src="<?php echo $ps->thumbnail;?>" alt="" class="product-thumb"></a>
+                            <h2><a href="products.php?pid=<?php echo $ps->pid;?>"><?php echo $ps->name;?></a></h2>
                             <div class="product-wid-price">
-                                <ins>$400.00</ins> <del>$425.00</del>
+                                <ins><?php echo number_format($ps->sale_price);?>원</ins> <del><?php echo number_format($ps->price);?>원</del>
                             </div>                            
                         </div>
-                        <div class="single-wid-product">
-                            <a href="single-product.html"><img src="img/product-thumb-1.jpg" alt="" class="product-thumb"></a>
-                            <h2><a href="single-product.html">Sony Smart Air Condtion</a></h2>
-                            <div class="product-wid-rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="product-wid-price">
-                                <ins>$400.00</ins> <del>$425.00</del>
-                            </div>                            
-                        </div>
-                        <div class="single-wid-product">
-                            <a href="single-product.html"><img src="img/product-thumb-2.jpg" alt="" class="product-thumb"></a>
-                            <h2><a href="single-product.html">Samsung gallaxy note 4</a></h2>
-                            <div class="product-wid-rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="product-wid-price">
-                                <ins>$400.00</ins> <del>$425.00</del>
-                            </div>                            
-                        </div>
+<?php
+    $t++;
+    }
+}
+?>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -292,8 +269,8 @@ while($rs = $result->fetch_object()){
                         <h2 class="product-wid-title">Top New</h2>
                         <a href="#" class="wid-view-more">View All</a>
                         <div class="single-wid-product">
-                            <a href="single-product.html"><img src="img/product-thumb-3.jpg" alt="" class="product-thumb"></a>
-                            <h2><a href="single-product.html">Apple new i phone 6</a></h2>
+                            <a href="products.php"><img src="img/product-thumb-3.jpg" alt="" class="product-thumb"></a>
+                            <h2><a href="products.php">Apple new i phone 6</a></h2>
                             <div class="product-wid-rating">
                                 <i class="fa fa-star"></i>
                                 <i class="fa fa-star"></i>
@@ -306,8 +283,8 @@ while($rs = $result->fetch_object()){
                             </div>                            
                         </div>
                         <div class="single-wid-product">
-                            <a href="single-product.html"><img src="img/product-thumb-4.jpg" alt="" class="product-thumb"></a>
-                            <h2><a href="single-product.html">Samsung gallaxy note 4</a></h2>
+                            <a href="products.php"><img src="img/product-thumb-4.jpg" alt="" class="product-thumb"></a>
+                            <h2><a href="products.php">Samsung gallaxy note 4</a></h2>
                             <div class="product-wid-rating">
                                 <i class="fa fa-star"></i>
                                 <i class="fa fa-star"></i>
@@ -320,8 +297,8 @@ while($rs = $result->fetch_object()){
                             </div>                            
                         </div>
                         <div class="single-wid-product">
-                            <a href="single-product.html"><img src="img/product-thumb-1.jpg" alt="" class="product-thumb"></a>
-                            <h2><a href="single-product.html">Sony playstation microsoft</a></h2>
+                            <a href="products.php"><img src="img/product-thumb-1.jpg" alt="" class="product-thumb"></a>
+                            <h2><a href="products.php">Sony playstation microsoft</a></h2>
                             <div class="product-wid-rating">
                                 <i class="fa fa-star"></i>
                                 <i class="fa fa-star"></i>
