@@ -1,9 +1,9 @@
 <?php
 include "header.php";
-if(!$_SESSION['AUID']){
-  echo "<script>alert('권한이 없습니다.');history.back();</script>";
-  exit;
-}
+//if(!$_SESSION['AUID']){
+  //echo "<script>alert('권한이 없습니다.');history.back();</script>";
+  //exit;
+//}
 
 $pageNumber  = $_GET['pageNumber']??1;//현재 페이지, 없으면 1
 if($pageNumber < 1) $pageNumber = 1;

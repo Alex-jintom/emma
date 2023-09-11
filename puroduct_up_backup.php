@@ -1,10 +1,10 @@
 <?php
 include "header.php";
 
-if(!$_SESSION['AUID']){
-    echo "<script>alert('권한이 없습니다.');history.back();</script>";
-    exit;
-}
+//if(!$_SESSION['AUID']){
+  //  echo "<script>alert('권한이 없습니다.');history.back();</script>";
+    //exit;
+//}
 
 
 

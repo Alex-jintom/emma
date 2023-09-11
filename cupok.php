@@ -2,10 +2,10 @@
 include "dbcon.php";
 ini_set( 'display_errors', '0' );
 
-if(!$_SESSION['AUID']){
-    echo "<script>alert('권한이 없습니다.');history.back();</script>";
-    exit;
-}
+//if(!$_SESSION['AUID']){
+  //  echo "<script>alert('권한이 없습니다.');history.back();</script>";
+    //exit;
+//}
 
 
 $coupon_name=$_POST["coupon_name"];//쿠폰명

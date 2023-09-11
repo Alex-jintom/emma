@@ -4,10 +4,10 @@ ini_set( 'display_errors','0');
 
 
 
-if(!$_SESSION['AUID']){
-    echo "<script>alert('권한이 없습니다.');history.back();</script>";
-    exit;
-}
+//if(!$_SESSION['AUID']){
+   // echo "<script>alert('권한이 없습니다.');history.back();</script>";
+    //exit;
+//}
 
 
 $cate=$_POST["cate1"].$_POST["cate2"].$_POST["cate3"];//대중소분류를 모두 저장한다.
