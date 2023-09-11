@@ -32,7 +32,7 @@ if($_FILES["coupon_image"]["name"]){//첨부한 파일이 있으면
         $filename = $_FILES["coupon_image"]["name"];
         $ext = pathinfo($filename,PATHINFO_EXTENSION);//확장자 구하기
         $newfilename = "CPN_".date("YmdHis").substr(rand(),0,6);
-        $coupon_image = $newfilename.".".$ext;//새로운 파일이름과 확장자를 합친다
+        $coupon_image = ltrim($newfilename.".".$ext, "/");//새로운 파일이름과 확장자를 합친다
        
         if(move_uploaded_file($_FILES["coupon_image"]["tmp_name"], $save_dir.$coupon_image)){
             $coupon_image = $_CONFIG["CDN_SERVER"]."/data/".$coupon_image;
