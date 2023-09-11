@@ -113,11 +113,11 @@ while($rs = $result->fetch_object()){
                                             </td>
 
                                             <td class="product-thumbnail">
-                                                <a href="/products.php?pid=<?php echo $p->pid;?>"><img width="145" height="145" alt="poster_1_up" class="shop_thumbnail" src="<?php echo $p->thumbnail;?>"></a>
+                                                <a href="products.php?pid=<?php echo $p->pid;?>"><img width="145" height="145" alt="poster_1_up" class="shop_thumbnail" src="<?php echo $p->thumbnail;?>"></a>
                                             </td>
 
                                             <td class="product-name">
-                                                <a href="/products.php?pid=<?php echo $p->pid;?>"><?php echo $p->name;?></a>
+                                                <a href="products.php?pid=<?php echo $p->pid;?>"><?php echo $p->name;?></a>
                                             </td>
 
                                             <td class="product-price">

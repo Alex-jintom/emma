@@ -348,7 +348,7 @@ $j=0;
             $.ajax({
                 async : false ,
                 type : 'post' ,
-                url : '/admin/option_change.php' ,
+                url : 'option_change.php' ,
                 data  : data ,
                 dataType : 'json' ,
                 error : function() {} ,
