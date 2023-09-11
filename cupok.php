@@ -28,7 +28,7 @@ if($_FILES["coupon_image"]["name"]){//첨부한 파일이 있으면
             exit;
         }
 
-        $save_dir = $_SERVER['DOCUMENT_ROOT']."/data/";//파일을 업로드할 디렉토리
+        $save_dir = $_SERVER['DOCUMENT_ROOT']."/admin/data/";//파일을 업로드할 디렉토리
         $filename = $_FILES["coupon_image"]["name"];
         $ext = pathinfo($filename,PATHINFO_EXTENSION);//확장자 구하기
         $newfilename = "CPN_".date("YmdHis").substr(rand(),0,6);
