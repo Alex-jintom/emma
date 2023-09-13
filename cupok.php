@@ -35,7 +35,7 @@ if($_FILES["coupon_image"]["name"]){//첨부한 파일이 있으면
         $coupon_image = $newfilename.".".$ext;;//새로운 파일이름과 확장자를 합친다
        
         if(move_uploaded_file($_FILES["coupon_image"]["tmp_name"], $save_dir.$coupon_image)){
-           // $coupon_image ="/var/www/html/data/".$coupon_image;
+           $coupon_image ="/data/".$coupon_image;
         }else{
             echo "<script>alert('이미지를 등록할 수 없습니다. 관리자에게 문의해주십시오.');history.back();</script>";
             exit;
